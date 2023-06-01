@@ -5,7 +5,6 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const Fall = () => {
-
   useEffect(async () => {
     await test_inference(Array(120).fill(0));
     await init_sensor();
@@ -13,7 +12,6 @@ const Fall = () => {
 
   async function test_inference(inputArray) {
     try {
-      toast.info("Loading model...");
       const model = await tf.loadLayersModel("model.json");
 
       const inputTensor = tf.tensor2d(inputArray, [1, 120]);
@@ -25,11 +23,15 @@ const Fall = () => {
 
       // console.log(predictions);
       document.getElementById("test").innerHTML = predictions;
-      if (predictions >= 0.5) document.body.style.backgroundColor = "red";
-      else document.body.style.backgroundColor = "white";
+      if (predictions >= 0.5) {
+        document.body.style.backgroundColor = "red";
+        toast.error("Fall Detected");
+      }
+      else document.body.style.backgroundColor = `rgb(42, 74, 103)`;;
       // return predictions;
     } catch (err) {
       toast.error("Error: " + err);
+      return;
     }
   }
 
@@ -39,7 +41,6 @@ const Fall = () => {
         toast.error('No LinearAccelerationSensor found');
         return;
       }
-      toast.info("Initializing sensor...");
       const fs = 60;
       const rec_len = 2 * fs;
       const data = new Array(rec_len).fill(0.0);
@@ -67,6 +68,7 @@ const Fall = () => {
     }
     catch (err) {
       toast.error("Error: " + err);
+      return;
     }
   }
 
