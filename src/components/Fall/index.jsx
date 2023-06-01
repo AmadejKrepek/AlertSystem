@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { ToastContainer, toast } from 'react-toastify';
 import { Text } from "components";
@@ -8,7 +8,19 @@ import "./fall.css"
 import 'react-toastify/dist/ReactToastify.css';
 
 const Fall = () => {
-  const [sensorActive, setSensorActive] = React.useState(false);
+  const customId = "alert-toast";
+  const [sensorActive, setSensorActive] = useState(false);
+  const [hasFallen, setHasFallen] = useState(false);
+  const buttonRef = useRef(null);
+
+  const executeSiren = () => {
+    const audioElement = new Audio("siren.mp3");
+    audioElement.play()
+        .catch(error => {
+          // Handle the error, if any
+          console.log('Failed to play sound:', error);
+        });
+  };
 
   useEffect(async () => {
     await test_inference(Array(120).fill(0));
@@ -22,6 +34,15 @@ const Fall = () => {
     }
   }, [sensorActive]);
 
+  const handleFallDetection = () => {
+    if (hasFallen && 'vibrate' in navigator) {
+      navigator.vibrate(5000); // Vibrate for 200ms
+    }
+  };
+
+  useEffect(() => {
+    handleFallDetection();
+  }, [hasFallen]);
 
   async function test_inference(inputArray) {
     try {
@@ -39,9 +60,12 @@ const Fall = () => {
         document.getElementById("test").innerHTML = "Measuring: " + Number.parseFloat(predictions).toFixed(7);
       }
       if (predictions >= 0.5) {
+        setHasFallen(true);
+        
         document.body.style.backgroundColor = "red";
-        toast.error("Fall Detected");
-        toast.clearWaitingQueue();
+        toast.error("Fall Detected", {
+          toastId: customId
+        });
       }
       else {
         document.body.style.backgroundColor = `rgb(42, 74, 103)`;;
@@ -103,6 +127,16 @@ const Fall = () => {
           <div id="test" className="mt-10 text-lg">
             Value: 123
           </div>
+
+          <div className="mt-10 text-lg">
+            <button
+              ref={buttonRef}
+              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+              onClick={() => executeSiren()}
+            >
+              Execute Siren
+            </button>
+            </div>
         </div>
       )}
 
