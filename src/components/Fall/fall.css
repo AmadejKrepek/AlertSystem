@@ -1,0 +1,16 @@
+@keyframes sensorActive {
+    from {
+      background-color: red;
+      color: red;
+    }
+  
+    to {
+      background-color: green;
+      color: green;
+    }
+  }
+  
+  .animated-sensor {
+    animation: sensorActive 0.5s ease-in-out;
+  }
+  
