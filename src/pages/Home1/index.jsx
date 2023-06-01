@@ -41,9 +41,9 @@ const Home1Page = () => {
             Alert System
           </Text>
         </div>
-        <Text className="mt-[99px] text-red_700">
+        <div className="mt-[99px] mx-auto text-center">
           <Fall />
-        </Text>
+        </div>
       </div>
     </>
   );
