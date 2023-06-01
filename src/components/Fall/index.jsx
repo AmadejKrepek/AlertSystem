@@ -1,14 +1,27 @@
 import React, { useEffect } from "react";
 import * as tf from '@tensorflow/tfjs';
 import { ToastContainer, toast } from 'react-toastify';
+import { Text } from "components";
+
+import "./fall.css"
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const Fall = () => {
+  const [sensorActive, setSensorActive] = React.useState(false);
+
   useEffect(async () => {
     await test_inference(Array(120).fill(0));
     await init_sensor();
   }, []);
+
+  useEffect(async () => {
+    if (sensorActive) {
+      await test_inference(Array(120).fill(0));
+      await init_sensor();
+    }
+  }, [sensorActive]);
+
 
   async function test_inference(inputArray) {
     try {
@@ -22,10 +35,13 @@ const Fall = () => {
       output.dispose();
 
       // console.log(predictions);
-      document.getElementById("test").innerHTML = predictions;
+      if (sensorActive) {
+        document.getElementById("test").innerHTML = "Measuring: " + Number.parseFloat(predictions).toFixed(7);
+      }
       if (predictions >= 0.5) {
         document.body.style.backgroundColor = "red";
         toast.error("Fall Detected");
+        toast.clearWaitingQueue();
       }
       else {
         document.body.style.backgroundColor = `rgb(42, 74, 103)`;;
@@ -43,6 +59,7 @@ const Fall = () => {
         toast.error('No LinearAccelerationSensor found');
         return;
       }
+      setSensorActive(true);
       const fs = 60;
       const rec_len = 2 * fs;
       const data = new Array(rec_len).fill(0.0);
@@ -50,9 +67,6 @@ const Fall = () => {
 
       const acl = new LinearAccelerationSensor({ frequency: fs });
       acl.addEventListener("reading", async () => {
-        console.log(`Acceleration along the X-axis ${acl.x}`);
-        console.log(`Acceleration along the Y-axis ${acl.y}`);
-        console.log(`Acceleration along the Z-axis ${acl.z}`);
         var val = Math.sqrt(acl.x * acl.x + acl.y * acl.y + acl.z * acl.z);
 
         data.push(val);
@@ -76,7 +90,31 @@ const Fall = () => {
 
   return (
     <div>
-        <div id="test">Waiting for app activation</div>
+     {sensorActive && (
+        <div>
+          <Text
+            className="mx-auto text-2xl p-2 border-4 border-white rounded bg-green text-green-500 font-bold animated-sensor"
+            as="h4"
+            variant="h4"
+          >
+            Sensor Is Active
+          </Text>
+
+          <div id="test" className="mt-10 text-lg">
+            Value: 123
+          </div>
+        </div>
+      )}
+
+      {!sensorActive && (
+        <Text
+          className="mx-auto text-2xl p-2 border-4 border-white rounded bg-red-500 text-red-500 font-bold animated-sensor"
+          as="h4"
+          variant="h4"
+        >
+          Sensor Is Not Active
+        </Text>
+      )}
         <ToastContainer />
     </div>
   );
