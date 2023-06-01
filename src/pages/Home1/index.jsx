@@ -5,7 +5,7 @@ import { Button, Text, Fall } from "components";
 const Home1Page = () => {
   return (
     <>
-      <div className="bg-blue_gray_800 flex flex-col font-inter items-center justify-end mx-auto p-[154px] md:px-10 sm:px-5 w-full">
+      <div className="flex flex-col font-inter items-center justify-end mx-auto p-[154px] md:px-10 sm:px-5 w-full">
         <div className="h-[322px] md:h-[336px] mt-3.5 relative w-[71%] md:w-full">
           <div className="absolute h-[322px] inset-y-[0] left-[23%] my-auto w-[41%]">
             <div className="absolute h-[322px] inset-y-[0] left-[0] my-auto w-[95%]">
@@ -41,23 +41,9 @@ const Home1Page = () => {
             Alert System
           </Text>
         </div>
-        <Text className="mt-[99px] text-red_700" as="h1" variant="h1">
-          Danger!
-        </Text>
         <Text className="mt-[99px] text-red_700">
           <Fall />
         </Text>
-        <Text className="mt-[23px] text-gray_200" as="h2" variant="h2">
-          Your device has detected a fall!
-        </Text>
-        <Button
-          className="cursor-pointer font-semibold leading-[normal] min-w-[282px] mt-[61px] text-2xl md:text-[22px] text-center text-white_A700 sm:text-xl"
-          shape="RoundedBorder20"
-          size="sm"
-          variant="OutlineCyan200"
-        >
-          Teleport Home
-        </Button>
       </div>
     </>
   );
