@@ -44,7 +44,7 @@ const Home1Page = () => {
         <Text className="mt-[99px] text-red_700" as="h1" variant="h1">
           Danger!
         </Text>
-        <Text className="mt-[99px] text-red_700" as="h1" variant="h1">
+        <Text className="mt-[99px] text-red_700">
           <Fall />
         </Text>
         <Text className="mt-[23px] text-gray_200" as="h2" variant="h2">
