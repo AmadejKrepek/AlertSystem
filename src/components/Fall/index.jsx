@@ -27,7 +27,9 @@ const Fall = () => {
         document.body.style.backgroundColor = "red";
         toast.error("Fall Detected");
       }
-      else document.body.style.backgroundColor = `rgb(42, 74, 103)`;;
+      else {
+        document.body.style.backgroundColor = `rgb(42, 74, 103)`;;
+      }
       // return predictions;
     } catch (err) {
       toast.error("Error: " + err);
