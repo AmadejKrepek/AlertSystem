@@ -1,4 +1,4 @@
-## amadej_s_application16
+## Alert System
 
 Generated with ❤️ from [DhiWise](https://www.dhiwise.com)
 
