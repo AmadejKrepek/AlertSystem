@@ -9,17 +9,24 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const Fall = () => {
   const customId = "alert-toast";
+  const vibrationId = "vibration-toast"
+  const ringId = "ring-toast"
   const [sensorActive, setSensorActive] = useState(false);
   const [hasFallen, setHasFallen] = useState(false);
   const buttonRef = useRef(null);
 
   const executeSiren = () => {
+    toast.success("Siren is playing", {
+      toastId: ringId,
+    });
     const audioElement = new Audio("siren.mp3");
     audioElement.play()
         .catch(error => {
           // Handle the error, if any
           console.log('Failed to play sound:', error);
+          toast.error("Failed to play sound");
         });
+    handleFallDetection();
   };
 
   useEffect(async () => {
@@ -35,14 +42,19 @@ const Fall = () => {
   }, [sensorActive]);
 
   const handleFallDetection = () => {
-    if (hasFallen && 'vibrate' in navigator) {
-      navigator.vibrate(5000); // Vibrate for 200ms
+    if ('vibrate' in navigator) {
+      // Vibration API is supported
+      toast.success("Vibration is supported on this device",
+      {
+        toastId: vibrationId,
+      });
+      navigator.vibrate(5000);
+    } else {
+      // Vibration API is not supported
+      toast.error("Vibration is not supported on this device");
     }
+    
   };
-
-  useEffect(() => {
-    handleFallDetection();
-  }, [hasFallen]);
 
   async function test_inference(inputArray) {
     try {
@@ -63,8 +75,9 @@ const Fall = () => {
         setHasFallen(true);
         
         document.body.style.backgroundColor = "red";
-        toast.error("Fall Detected", {
-          toastId: customId
+        toast.error("Fall Detected",
+        {
+          toastId: customId,
         });
       }
       else {
@@ -115,40 +128,40 @@ const Fall = () => {
   return (
     <div>
      {sensorActive && (
-        <div>
-          <Text
-            className="mx-auto text-2xl p-2 border-4 border-white rounded bg-green text-green-500 font-bold animated-sensor"
-            as="h4"
-            variant="h4"
-          >
-            Sensor Is Active
-          </Text>
-
-          <div id="test" className="mt-10 text-lg">
-            Value: 123
-          </div>
-
-          <div className="mt-10 text-lg">
-            <button
-              ref={buttonRef}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-              onClick={() => executeSiren()}
-            >
-              Execute Siren
-            </button>
-            </div>
-        </div>
-      )}
-
-      {!sensorActive && (
+      <div>
         <Text
-          className="mx-auto text-2xl p-2 border-4 border-white rounded bg-red-500 text-red-500 font-bold animated-sensor"
+          className="mx-auto text-2xl p-2 border-4 border-white rounded bg-green text-green-500 font-bold animated-sensor"
           as="h4"
           variant="h4"
         >
-          Sensor Is Not Active
+          Sensor Is Active
         </Text>
-      )}
+
+        <div id="test" className="mt-10 text-lg">
+          Value: 123
+        </div>
+
+        <div className="mt-10 text-lg">
+          <button
+            ref={buttonRef}
+            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+            onClick={() => executeSiren()}
+          >
+            Execute Siren
+          </button>
+        </div>
+      </div>
+    )}
+
+    {!sensorActive && (
+      <Text
+        className="mx-auto text-2xl p-2 border-4 border-white rounded bg-red-500 text-white font-bold animated-sensor"
+        as="h4"
+        variant="h4"
+      >
+        Sensor Is Not Active
+      </Text>
+    )}
         <ToastContainer />
     </div>
   );
